@@ -16,6 +16,9 @@ jobs:
   retrain-and-build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write  # Update: Izin agar bot bisa push ke repo
+
     steps:
       # ── 1. Setup ──────────────────────────────────────────────────────────
       - name: Run actions/checkout@v4
@@ -62,7 +65,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add MLProject/mlruns/
-          git diff --staged --quiet || git commit -m "chore: update mlruns artifact from CI run ${{ env.RUN_ID }} [skip ci]"
+          git diff --staged --quiet || git commit -m "chore: update mlruns artifact from CI run ${{ env.RUN_ID }} [skip ci]" || echo "No changes to commit"
           git push
 
       # ── 4. Build & Push Docker Image ─────────────────────────────────────────
