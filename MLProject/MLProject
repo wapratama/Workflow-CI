@@ -1,0 +1,9 @@
+name: facies_classification
+
+entry_points:
+  main:
+    parameters:
+      data_path: {type: str, default: "facies_preprocessing.csv"}
+      n_estimators: {type: int, default: 200}
+      max_depth: {type: int, default: 25}
+    command: "uv run python modelling.py --data_path {data_path} --n_estimators {n_estimators} --max_depth {max_depth}"

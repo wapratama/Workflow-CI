@@ -1,0 +1,97 @@
+name: CI - Retrain Model & Build Docker Image
+
+# Trigger: setiap push ke branch main yang menyentuh MLProject/,
+# DAN dapat dipicu manual via workflow_dispatch
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'MLProject/**'
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE_NAME: facies-classifier
+
+jobs:
+  retrain-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Setup ──────────────────────────────────────────────────────────
+      - name: Run actions/checkout@v4
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Set up Python 3.12
+        run: uv python install 3.12
+
+      - name: Check Env
+        run: |
+          uv --version
+          uv run python --version
+
+      - name: Install dependencies
+        working-directory: ./MLProject
+        run: uv sync --locked
+
+      # ── 2. Re-training via MLflow Project ───────────────────────────────────
+      - name: Run mlflow project
+        working-directory: ./MLProject
+        run: |
+          uv run mlflow run . --env-manager=local \
+            --experiment-name "Facies Classification - CI Retraining" \
+            -P data_path=facies_preprocessing.csv \
+            -P n_estimators=200 \
+            -P max_depth=25 \
+            | tee mlflow_run_output.log
+
+      - name: Get latest MLflow run_id
+        working-directory: ./MLProject
+        run: |
+          RUN_ID=$(grep -oP 'MLFLOW_RUN_ID=\K[a-f0-9]+' mlflow_run_output.log | tail -1)
+          echo "Latest run_id: $RUN_ID"
+          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
+
+      # ── 3. Simpan artefak hasil training ke repository ──────────────────────
+      - name: Upload to GitHub (commit artefak mlruns)
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add MLProject/mlruns/
+          git diff --staged --quiet || git commit -m "chore: update mlruns artifact from CI run ${{ env.RUN_ID }} [skip ci]"
+          git push
+
+      # ── 4. Build & Push Docker Image ─────────────────────────────────────────
+      - name: Build Docker Model
+        working-directory: ./MLProject
+        run: |
+          uv run mlflow models build-docker \
+            --model-uri "runs:/${{ env.RUN_ID }}/model" \
+            --name "${{ env.DOCKER_IMAGE_NAME }}" \
+            --env-manager local
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Tag Docker Image
+        run: |
+          docker tag ${{ env.DOCKER_IMAGE_NAME }} \
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker tag ${{ env.DOCKER_IMAGE_NAME }} \
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.RUN_ID }}
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.RUN_ID }}
+
+      - name: Complete job
+        run: |
+          echo "CI pipeline selesai. Run ID: ${{ env.RUN_ID }}, Docker image pushed."
