@@ -1,0 +1,15 @@
+artifact_uri: file:///home/runner/work/Workflow-CI/Workflow-CI/MLProject/mlruns/463232656365177357/09671dd7fb0b42e4a2d1e10127162651/artifacts
+end_time: 1783037488640
+entry_point_name: ''
+experiment_id: '463232656365177357'
+lifecycle_stage: active
+run_id: 09671dd7fb0b42e4a2d1e10127162651
+run_name: bedecked-shrew-842
+run_uuid: 09671dd7fb0b42e4a2d1e10127162651
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1783037477580
+status: 3
+tags: []
+user_id: runner

@@ -1,0 +1,30 @@
+artifact_path: model
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.13
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.5.2
+mlflow_version: 2.19.0
+model_size_bytes: 28365296
+model_uuid: afe578e49e084c1689312482ed3bb797
+run_id: 09671dd7fb0b42e4a2d1e10127162651
+signature:
+  inputs: '[{"type": "long", "name": "Formation", "required": true}, {"type": "long",
+    "name": "Well Name", "required": true}, {"type": "double", "name": "Depth", "required":
+    true}, {"type": "double", "name": "GR", "required": true}, {"type": "double",
+    "name": "ILD_log10", "required": true}, {"type": "double", "name": "DeltaPHI",
+    "required": true}, {"type": "double", "name": "PHIND", "required": true}, {"type":
+    "double", "name": "PE", "required": true}, {"type": "long", "name": "NM_M", "required":
+    true}, {"type": "double", "name": "RELPOS", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "int64", "shape": [-1]}}]'
+  params: null
+utc_time_created: '2026-07-03 00:11:25.095202'
