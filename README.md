@@ -20,7 +20,7 @@ Workflow-CI/
 │   ├── pyproject.toml             # Dependency spec (uv)
 │   ├── uv.lock                    # Lockfile
 │   └── facies_preprocessing.csv   # Dataset hasil Kriteria 1
-├── Docker_Hub.txt                 # Link Docker Hub (gitignored)
+├── Docker_Hub.txt                 # Link Docker Hub
 └── README.md
 ```
 
@@ -48,15 +48,6 @@ aktif"*.
 Karena command-nya sendiri diawali `uv run`, `uv` yang mengurus
 pembacaan `pyproject.toml`/`uv.lock` dan eksekusi di virtual environment
 yang sesuai, MLflow hanya jadi orchestrator run tracking, bukan pengelola dependency.
-
-**Hasil pengujian** (dijalankan di environment testing):
-```
-=== Running command 'uv run python modelling.py --data_path facies_preprocessing.csv
-     --n_estimators 200 --max_depth 25' in run with ID '297ed46da34b468399d465de6b68f57a' ===
-Test accuracy : 0.8253
-Test f1_macro : 0.8309
-=== Run (ID '297ed46da34b468399d465de6b68f57a') succeeded ===
-```
 
 ---
 

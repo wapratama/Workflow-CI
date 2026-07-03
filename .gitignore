@@ -22,4 +22,3 @@ venv.bak/
 mlflow_run_output.log
 *.log
 temp/
-Docker_Hub.txt
