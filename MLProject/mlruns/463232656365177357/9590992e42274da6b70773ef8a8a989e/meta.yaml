@@ -1,0 +1,15 @@
+artifact_uri: file:///home/runner/work/Workflow-CI/Workflow-CI/MLProject/mlruns/463232656365177357/9590992e42274da6b70773ef8a8a989e/artifacts
+end_time: 1783036801471
+entry_point_name: ''
+experiment_id: '463232656365177357'
+lifecycle_stage: active
+run_id: 9590992e42274da6b70773ef8a8a989e
+run_name: clumsy-moth-943
+run_uuid: 9590992e42274da6b70773ef8a8a989e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1783036791799
+status: 3
+tags: []
+user_id: runner

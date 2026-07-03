@@ -1,0 +1,6 @@
+artifact_location: file:///home/runner/work/Workflow-CI/Workflow-CI/MLProject/mlruns/463232656365177357
+creation_time: 1783036791675
+experiment_id: '463232656365177357'
+last_update_time: 1783036791675
+lifecycle_stage: active
+name: Facies Classification - CI Retraining
